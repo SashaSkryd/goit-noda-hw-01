@@ -1,4 +1,6 @@
 # goit-noda-hw-01
+ссылка на скрины по работе
+https://drive.google.com/drive/folders/1niCmXTMNsbOlRp-z0lHH0o6TmpTR7khO
 
 
 # Получаем и выводим весь список контакстов в виде таблицы (console.table)
