@@ -1,27 +1,32 @@
-const { listContacts, getContactById, removeContact, addContact } = require("./contacts.js");
-const argv = require('yargs').argv;
+const express = require("express")
+const cors = require("cors")
+const contactsRouter = require("./routes/contactsRoutes.js")
 
-async function invokeAction({ action, id, name, email, phone }) {
-  switch (action) {
-    case 'list':
-          console.table(await listContacts());
-      break;
+const PORT = process.env.NODE_START || 5500
 
-    case 'get':
-          console.table(await getContactById(id));
-      break;
-
-    case 'add':
-          console.table(await addContact(name, email, phone));
-      break;
-
-    case 'remove':
-      console.table(await removeContact(id))
-      break;
-
-    default:
-      console.warn('\x1B[31m Unknown action type!');
+class Server {
+  start() {
+    this.server = express()
+    this.initMiddlewares()
+    this.initRoutes()
+    this.listener()
+  }
+  initMiddlewares() {
+    this.server.use(express.json())
+    this.server.use(
+      cors({
+        origin: "*",
+      })
+    )
+  }
+  initRoutes() {
+    this.server.use("/api/contacts", contactsRouter)
+  }
+  listener() {
+    this.server.listen(PORT, () => {
+      console.log("Server on this port: ", PORT)
+    })
   }
 }
-
-invokeAction(argv);
+const server = new Server()
+server.start()
