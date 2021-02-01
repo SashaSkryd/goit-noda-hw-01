@@ -57,7 +57,7 @@ function validateUpdateRules(req, res, next) {
     name: Joi.string(),
     email: Joi.string(),
     phone: Joi.string(),
-  })
+  }).min(1);
   const validateResult = validateRules.validate(req.body)
   if (validateResult.error) {
     return res.status(400).send({ message: "missing required name field" })
