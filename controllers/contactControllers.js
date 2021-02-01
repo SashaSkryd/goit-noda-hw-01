@@ -19,13 +19,13 @@ function getById(req, res) {
 }
 
 function validateContacts(req, res, next) {
-  const validateRules = Joi.object({
+  const validateContactsRules = Joi.object({
     name: Joi.string().required(),
     email: Joi.string().required(),
     phone: Joi.string().required(),
   })
-  const validateResult = validateRules.validate(req.body)
-  if (validateResult.error) {
+  const validateContactsResult = validateContactsRules.validate(req.body)
+  if (validateContactsResult.error) {
     return res.status(400).send({ message: "missing required name field" })
   }
   next()
@@ -53,13 +53,13 @@ function removeContact(req, res) {
 }
 
 function validateUpdateRules(req, res, next) {
-  const validateRules = Joi.object({
+  const validateUpdateRules = Joi.object({
     name: Joi.string(),
     email: Joi.string(),
     phone: Joi.string(),
   }).min(1);
-  const validateResult = validateRules.validate(req.body)
-  if (validateResult.error) {
+  const validateUpdateResult = validateUpdateRules.validate(req.body)
+  if (validateUpdateResult.error) {
     return res.status(400).send({ message: "missing required name field" })
   }
   next()
