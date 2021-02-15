@@ -9,7 +9,7 @@ router.use(logger("dev"));
 
 router.post("/register", validateUser, createUser);
 router.post("/login", login );
-router.get("/logout/:userId",validToken ,logoutUser);
+router.get("/logout",validToken ,logoutUser);
 router.get("/current",validToken,  currentUser );
 router.patch("/:userid", validToken, subscription );
 
