@@ -79,19 +79,11 @@ async function login(req, res) {
       subscription: user.subscription,
     },
   });
-}
+} 
+
 async function logoutUser(req, res) {
-  const {
-    params: { userId },
-  } = req;
-
-  const findUser = await User.findById(userId);
-
-  if (!findUser) {
-    return res.status(401).send("Not authorized");
-  }
-
   await User.findByIdAndUpdate(userId, { token: "" });
+  
   return res.status(204).send("No Content");
 }
 
