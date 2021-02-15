@@ -2,17 +2,17 @@
 const {
     Types: { ObjectId },
 } = require('mongoose');
-const contacts = require('./contacts.js');
+const Сontacts = require('./contacts.js');
 
 async function getContacts(req, res) {
-    const contact = await contacts.find();
+    const contact = await Сontacts.find();
     res.json(contact);
 }
 
 async function createContact(req, res) {
     try {
         const { body } = req;
-        const contact = await contacts.create(body);
+        const contact = await Сontacts.create(body);
         res.json(contact);
     } catch (error) {
         res.status(400).send(error);
@@ -24,7 +24,7 @@ async function updateContact(req, res) {
         params: { contactId },
     } = req;
 
-    const updatedContact = await contacts.findByIdAndUpdate(contactId, req.body, {
+    const updatedContact = await Сontacts.findByIdAndUpdate(contactId, req.body, {
         new: true,
     });
 
@@ -40,7 +40,7 @@ async function deleteContact(req, res) {
         params: { contactId },
     } = req;
 
-    const deletedContact = await contacts.findByIdAndDelete(contactId)
+    const deletedContact = await Сontacts.findByIdAndDelete(contactId)
 
     if (!deletedContact) {
         return res.status(400).send("contact isn't found");
@@ -66,7 +66,7 @@ async function getContact(req, res) {
         params: { contactId },
     } = req;
 
-    const contact = await contacts.findById(contactId);
+    const contact = await Сontacts.findById(contactId);
 
     if (!contact) {
         return res.status(400).send("contact isn't found");
@@ -101,7 +101,26 @@ function validateUpdateRules(req, res, next) {
   next()
 }
 
+async function paginationPage(req, res) {
+  const {
+    params: { page, limit },
+  } = req;
+
+const contact = await Сontacts.paginate({}, { limit: limit, page: page });
+   res.json(contact.docs);
+}
+async function paginationSubscription(req, res) {
+  const {
+    params: { sub },
+  } = req;
+
+  const contact = await Сontacts.paginate({ subscription: sub },{ limit: 20, page: 1})
+  res.json(contact.docs);
+}
+
 module.exports = {
+    paginationSubscription,
+    paginationPage,
     getContacts,
     createContact,
     updateContact,
