@@ -101,7 +101,26 @@ function validateUpdateRules(req, res, next) {
   next()
 }
 
+async function paginationPage(req, res) {
+  const {
+    params: { page, limit },
+  } = req;
+
+const contact = await Сontacts.paginate({}, { limit: limit, page: page });
+   res.json(contact.docs);
+}
+async function paginationSubscription(req, res) {
+  const {
+    params: { sub },
+  } = req;
+
+  const contact = await Сontacts.paginate({ subscription: sub },{ limit: 20, page: 1})
+  res.json(contact.docs);
+}
+
 module.exports = {
+    paginationSubscription,
+    paginationPage,
     getContacts,
     createContact,
     updateContact,
