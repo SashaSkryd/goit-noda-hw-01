@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const contactsRouter = require('./contatcs/contactsRoutes');
+const routerImage = require('./routerImage.js')
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ function connectMiddlewares(Contacts) {
 
 function declareRoutes(Contacts) {
     Contacts.use('/api/contacts', contactsRouter);
+    Contacts.use("/images", routerImage);
 }
 
 async function connectToDb() {
