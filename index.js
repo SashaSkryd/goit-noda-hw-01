@@ -4,11 +4,12 @@ const dotenv = require('dotenv');
 const contactsRouter = require('./contatcs/contactsRoutes');
 const routerImage = require('./routerImage.js')
 const usersRoutes = require('./user/usersRoutes.js')
+const sgMail = require("@sendgrid/mail")
 
 dotenv.config();
 
 const PORT = process.env.port || 5500;
-
+sgMail.setApiKey(process.env.EMAIL_TOKEN)
 start();
 
 function start() {

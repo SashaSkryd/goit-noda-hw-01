@@ -9,6 +9,7 @@ const {
   subscription,
   validationAvatar,
   updateUser,
+  confirmEmail,
 } = require("./usersControllers")
 const { validToken } = require("../auth/authControllers")
 
@@ -38,5 +39,6 @@ router.get("/logout", validToken, logoutUser)
 router.get("/current", validToken, currentUser)
 router.patch("/avatars", validToken, upload.single("avatar"), validationAvatar, updateUser)
 router.patch("/:userid", validToken, subscription)
+router.get("/verify/:verificationToken", confirmEmail)
 
 module.exports = router

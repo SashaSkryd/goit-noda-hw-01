@@ -12,19 +12,23 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true,
-    },
+  },
   subscription: {
     type: String,
     enum: ["free", "pro", "premium"],
     default: "free"
-    },  
+  },
   token: {
     type: String,
     unique: true
   },
-   avatarURL: {
-     type: String,
-     unique: true
+  avatarURL: {
+    type: String,
+    unique: true
+  },
+  verificationToken: {
+    type: String,
+    unique: true
   }
 },
 {
