@@ -61,7 +61,7 @@ async function createUser(req, res) {
 }
 
 async function login(req, res) {
-  const { email, password } = req.body
+  const { email, password, verificationToken} = req.body
 
   const user = await User.findOne({
     email,
@@ -75,6 +75,10 @@ async function login(req, res) {
 
   if (!paswordValid) {
     return res.status(401).send("Email or password is wrong")
+  }
+  
+  if (verificationToken) {
+    return res.status(401).send("Confirm your email adress")
   }
 
   const token = jwt.sign(
