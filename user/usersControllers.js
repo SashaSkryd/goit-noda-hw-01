@@ -12,6 +12,8 @@ const jwt = require("jsonwebtoken")
 const mongoose = require("mongoose")
 mongoose.set("useFindAndModify", false)
 const Avatar = require("avatar-builder")
+const { v4: uuidv4 } = require("uuid")
+const sgMail = require("@sendgrid/mail")
 
 dotenv.config()
 
@@ -31,7 +33,9 @@ function validateUser(req, res, next) {
 
 async function createUser(req, res) {
   const { body } = req
+  const userToken = uuidv4()
   try {
+    sendMail(userToken, body.email)
     const avatar = Avatar.catBuilder(128)
     avatar.create().then((buffer) => fs.writeFile("tmp/avatar.png", buffer))
     const nameAv = Date.now()
@@ -42,6 +46,7 @@ async function createUser(req, res) {
       password: hashedPassword,
       token: "",
       avatarURL: `http://localhost:5500/images/${nameAv}.png`,
+      verificationToken: userToken,
     })
     const { subscription, email } = user
     res.status(201).json({
@@ -56,7 +61,7 @@ async function createUser(req, res) {
 }
 
 async function login(req, res) {
-  const { email, password } = req.body
+  const { email, password, verificationToken} = req.body
 
   const user = await User.findOne({
     email,
@@ -70,6 +75,10 @@ async function login(req, res) {
 
   if (!paswordValid) {
     return res.status(401).send("Email or password is wrong")
+  }
+  
+  if (verificationToken) {
+    return res.status(401).send("Confirm your email adress")
   }
 
   const token = jwt.sign(
@@ -169,4 +178,46 @@ function validationAvatar(req, res, next) {
   next()
 }
 
-module.exports = { createUser, validateUser, login, logoutUser, currentUser, subscription, updateUser, validationAvatar }
+async function confirmEmail(req, res) {
+  const {
+    params: { verificationToken },
+  } = req
+
+  const user = await User.findOne({
+    verificationToken,
+  })
+  if (!user) {
+    return res.status(404).send("User not found")
+  }
+  const conectUser = await User.findByIdAndUpdate(user._id, { verificationToken: "" })
+  console.log(conectUser)
+  return res.status(200).send("successfull")
+}
+async function sendMail(token, email) {
+  try {
+    console.log("email", email)
+    console.log("token", token)
+    const msg = {
+      to: email,
+      from: "sashaskryd@gmail.com",
+      subject: "Please verify your account",
+      html: `Welcome to our application! To verify your account please go by <a href="http://localhost:5500/auth/users/verify/${token}">link</a>`,
+    }
+
+    await sgMail.send(msg)
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+module.exports = {
+  confirmEmail,
+  createUser,
+  validateUser,
+  login,
+  logoutUser,
+  currentUser,
+  subscription,
+  updateUser,
+  validationAvatar,
+}
